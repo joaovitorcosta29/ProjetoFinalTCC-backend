@@ -4,26 +4,41 @@
  */
 package com.projetofinalTCC.backendTCC.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 /**
  *
  * @author Aluno
  */
+
+@Entity
+@Table(name = "tb_usuario")
 public class UsuarioDTO {
+    
+   @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
+   @Column(name = "id_usuario")
    private Long idUsuario;
+   
    private String nome;
    private String email;
    private String senha;
-
-    public UsuarioDTO() {
+   
+   @Enumerated(EnumType.STRING)
+   @Column(nullable = false)
+   private Cargo cargo;
+   
+    public enum Cargo{
+        MOTORISTA, ADMIN
     }
-
-    public UsuarioDTO(Long idUsuario, String nome, String email, String senha) {
-        this.idUsuario = idUsuario;
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-    }
-
+   
     public Long getIdUsuario() {
         return idUsuario;
     }
@@ -55,6 +70,13 @@ public class UsuarioDTO {
     public void setSenha(String senha) {
         this.senha = senha;
     }
-   
-   
+
+    public Cargo getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(Cargo cargo) {
+        this.cargo = cargo;
+    }
+
 }
