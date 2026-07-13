@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.projetofinalTCC.backendTCC.service;
 
 import com.projetofinalTCC.backendTCC.model.UsuarioDTO;
@@ -10,17 +6,12 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.sql.Date;
-import javax.crypto.SecretKey;
+import java.util.Date;
+import javax.crypto.SecretKey; 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-/**
- *
- * @author Aluno
- */
 
 @Service
 public class TokenService {
@@ -34,11 +25,11 @@ public class TokenService {
     
     public String gerarToken(UsuarioDTO user) {
         if(
-            user.getIdUsuario() == 0 || 
             user.getIdUsuario() == null ||
-            user.getNome().equals("") ||
-            user.getEmail().equals("") ||
-            user.getCargo().equals("") 
+            user.getIdUsuario() == 0 || 
+            user.getNome() == null || user.getNome().equals("") ||
+            user.getEmail() == null || user.getEmail().equals("") ||
+            user.getCargo() == null
         ) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), 
             "Um ou mais campos faltantes");
@@ -48,7 +39,7 @@ public class TokenService {
                 .subject(user.getNome())
                 .claim("id_usuario", user.getIdUsuario())
                 .claim("nome", user.getNome())
-                .claim("cargo", user.getCargo())
+                .claim("cargo", user.getCargo().name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 3000000))
                 .signWith(this.getKeySign())
@@ -65,26 +56,24 @@ public class TokenService {
         UsuarioDTO user = new UsuarioDTO();
         user.setIdUsuario(claims.get("id_usuario", Long.class));
         user.setNome(claims.get("nome", String.class));
-        user.setCargo(claims.get("cargo", .class));
+        
+        String cargoStr = claims.get("cargo", String.class);
+        if (cargoStr != null) {
+            user.setCargo(UsuarioDTO.Cargo.valueOf(cargoStr));
+        }
         
         return user;
     }
     
     public boolean validarToken(String token) {
         try {
-            // Cria um parser JWT com a chave secreta para validação
             Jwts.parser()
-                    .setSigningKey(getKeySign())
+                    .verifyWith(getKeySign())
                     .build()
-                    // Analisa e valida o token (lança exceção se inválido ou expirado)
-                    .parseClaimsJws(token);
-            // Se chegou aqui, o token é válido
+                    .parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            // Se qualquer exceção ocorrer, o token é inválido ou expirou
             return false;
         }
     }
-    
-    
 }
