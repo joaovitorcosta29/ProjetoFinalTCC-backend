@@ -1,59 +1,85 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.projetofinalTCC.backendTCC.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-/**
- *
- * @author Aluno
- */
-
-@Entity
-@Table(name = "tb_viagens")
 public class ViagemDTO {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_viagem")
     private Long idViagem;
-    
-    @Column(name = "id_usuario")
     private Long idUsuario;
-    
-    @Column(name = "id_veiculo")
     private Long idVeiculo;
-    
     private String destino;
-    
-    @Column(name = "km_inicial")
     private Double kmInicial;
-    
-    @Column(name = "km_final")
     private Double kmFinal;
-      
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status_viagem", nullable = false)
     private StatusViagem statusViagem;
+    private AlertaManutencao alertaManutencao;
 
     public enum StatusViagem {
         EM_ANDAMENTO, FINALIZADA
     }        
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "alerta_manutencao", nullable = false)
-    private AlertaManutencao alertaManutencao;
-
     public enum AlertaManutencao {
         OK, REVISAO_NECESSARIA
     }  
+
+    public Long getIdViagem() {
+        return idViagem;
+    }
+
+    public void setIdViagem(Long idViagem) {
+        this.idViagem = idViagem;
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public Long getIdVeiculo() {
+        return idVeiculo;
+    }
+
+    public void setIdVeiculo(Long idVeiculo) {
+        this.idVeiculo = idVeiculo;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    public Double getKmInicial() {
+        return kmInicial;
+    }
+
+    public void setKmInicial(Double kmInicial) {
+        this.kmInicial = kmInicial;
+    }
+
+    public Double getKmFinal() {
+        return kmFinal;
+    }
+
+    public void setKmFinal(Double kmFinal) {
+        this.kmFinal = kmFinal;
+    }
+
+    public StatusViagem getStatusViagem() {
+        return statusViagem;
+    }
+
+    public void setStatusViagem(StatusViagem statusViagem) {
+        this.statusViagem = statusViagem;
+    }
+
+    public AlertaManutencao getAlertaManutencao() {
+        return alertaManutencao;
+    }
+
+    public void setAlertaManutencao(AlertaManutencao alertaManutencao) {
+        this.alertaManutencao = alertaManutencao;
+    }
 }

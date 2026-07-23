@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.projetofinalTCC.backendTCC.repository;
 
 import com.projetofinalTCC.backendTCC.model.UsuarioDTO;
@@ -11,33 +7,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author Aluno
- */
 @Repository 
 public class UsuarioRepository {
+    
     public int registrar(UsuarioDTO usuario) {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = null;
-            stmt = conn.prepareStatement("INSERT INTO tb_usuario (nome, email,senha) values(?,?,?)");
+            stmt = conn.prepareStatement("INSERT INTO tb_usuario (nome, email, senha, cargo) values(?,?,?,?)");
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getEmail());
             stmt.setString(3, usuario.getSenha());
+            
+            String cargoString = "MOTORISTA";
+            if (usuario.getCargo() != null) {
+                cargoString = usuario.getCargo() == UsuarioDTO.Cargo.ADMINISTRADOR ? "ADMIN" : "MOTORISTA";
+            }
+            stmt.setString(4, cargoString);
 
             linhasAfetadas = stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
+        return linhasAfetadas;
     }
 
     public UsuarioDTO Logar(String email, String senha) {
-        UsuarioDTO usuario = new UsuarioDTO();
+        UsuarioDTO usuario = null;
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = null;
@@ -51,15 +50,22 @@ public class UsuarioRepository {
             rs = stmt.executeQuery();
             
             if (rs.next()) {
+                usuario = new UsuarioDTO();
                 usuario.setIdUsuario(rs.getLong("id_usuario"));
                 usuario.setNome(rs.getString("nome"));
-                usuario.setEmail(rs.getString("login"));
+                usuario.setEmail(rs.getString("email"));
                 usuario.setSenha(rs.getString("senha"));
+                
+                String cargoBanco = rs.getString("cargo");
+                if ("ADMIN".equals(cargoBanco)) {
+                    usuario.setCargo(UsuarioDTO.Cargo.ADMINISTRADOR);
+                } else {
+                    usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
+                }
             }
             
         } catch (SQLException e) {
             e.printStackTrace();
-
         }
         return usuario;
     }

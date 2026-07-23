@@ -1,44 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.projetofinalTCC.backendTCC.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-/**
- *
- * @author Aluno
- */
-
-@Entity
-@Table(name = "tb_usuario")
 public class UsuarioDTO {
     
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   @Column(name = "id_usuario")
-   private Long idUsuario;
-   
-   private String nome;
-   private String email;
-   private String senha;
-   
-   @Enumerated(EnumType.STRING)
-   @Column(nullable = false)
-   private Cargo cargo;
-   
-    public enum Cargo{
-        MOTORISTA, ADMIN
+    private Long idUsuario;
+    private String nome;
+    private String email;
+    private String senha;
+    private Cargo cargo;
+
+    public enum Cargo {
+        ADMINISTRADOR, MOTORISTA
     }
-   
+
     public Long getIdUsuario() {
         return idUsuario;
     }
@@ -78,5 +51,4 @@ public class UsuarioDTO {
     public void setCargo(Cargo cargo) {
         this.cargo = cargo;
     }
-
 }
