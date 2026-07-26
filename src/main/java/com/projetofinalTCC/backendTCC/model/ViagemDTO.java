@@ -1,23 +1,36 @@
 package com.projetofinalTCC.backendTCC.model;
 
 public class ViagemDTO {
-    
+
     private Long idViagem;
-    private Long idUsuario;
-    private Long idVeiculo;
-    private String destino;
+    private Integer idUsuario;
+    private Integer idVeiculo;
+    private String cidadeDestino;
+    private Estado estadoDestino;
     private Double kmInicial;
     private Double kmFinal;
     private StatusViagem statusViagem;
     private AlertaManutencao alertaManutencao;
 
+    public enum Estado {
+        AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, 
+        MT, MS, MG, PA, PB, PR, PE, PI, RJ, RN, 
+        RS, RO, RR, SC, SP, SE, TO
+    }
+
     public enum StatusViagem {
-        EM_ANDAMENTO, FINALIZADA
-    }        
-    
+        DISPONIVEL,
+        EM_ANDAMENTO,
+        FINALIZADA
+    }
+
     public enum AlertaManutencao {
-        OK, REVISAO_NECESSARIA
-    }  
+        OK,
+        REVISAO_NECESSARIA
+    }
+
+    public ViagemDTO() {
+    }
 
     public Long getIdViagem() {
         return idViagem;
@@ -27,28 +40,36 @@ public class ViagemDTO {
         this.idViagem = idViagem;
     }
 
-    public Long getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(Long idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
-    public Long getIdVeiculo() {
+    public Integer getIdVeiculo() {
         return idVeiculo;
     }
 
-    public void setIdVeiculo(Long idVeiculo) {
+    public void setIdVeiculo(Integer idVeiculo) {
         this.idVeiculo = idVeiculo;
     }
 
-    public String getDestino() {
-        return destino;
+    public String getCidadeDestino() {
+        return cidadeDestino;
     }
 
-    public void setDestino(String destino) {
-        this.destino = destino;
+    public void setCidadeDestino(String cidadeDestino) {
+        this.cidadeDestino = cidadeDestino;
+    }
+
+    public Estado getEstadoDestino() {
+        return estadoDestino;
+    }
+
+    public void setEstadoDestino(Estado estadoDestino) {
+        this.estadoDestino = estadoDestino;
     }
 
     public Double getKmInicial() {

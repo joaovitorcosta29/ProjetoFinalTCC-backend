@@ -16,14 +16,16 @@ public class VeiculoRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = null;
-            
-            // Ajuste os nomes das colunas conforme o seu banco de dados (tb_veiculo)
-            stmt = conn.prepareStatement("INSERT INTO tb_veiculo (modelo, placa, ano) VALUES (?, ?, ?)");
+            PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status) VALUES (?, ?, ?, ?, ?, ?)"
+            );
 
-            stmt.setString(1, veiculo.getModelo());
-            stmt.setString(2, veiculo.getPlaca());
-            stmt.setInt(3, veiculo.getAno());
+            stmt.setString(1, veiculo.getPlaca());
+            stmt.setString(2, veiculo.getModelo());
+            stmt.setInt(3, veiculo.getAnoFabricacao());
+            stmt.setDouble(4, veiculo.getKmAtual());
+            stmt.setDouble(5, veiculo.getKmUltimaManutencao());
+            stmt.setString(6, veiculo.getStatus());
 
             linhasAfetadas = stmt.executeUpdate();
 
@@ -37,19 +39,18 @@ public class VeiculoRepository {
         List<VeiculoDTO> veiculos = new ArrayList<>();
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            stmt = conn.prepareStatement("SELECT * FROM tb_veiculo");
-            rs = stmt.executeQuery();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tb_veiculos");
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 VeiculoDTO veiculo = new VeiculoDTO();
-                // Ajuste os métodos de set e nomes de coluna com base na sua VeiculoDTO
                 veiculo.setIdVeiculo(rs.getLong("id_veiculo"));
-                veiculo.setModelo(rs.getString("modelo"));
                 veiculo.setPlaca(rs.getString("placa"));
-                veiculo.setAno(rs.getInt("ano"));
+                veiculo.setModelo(rs.getString("modelo"));
+                veiculo.setAnoFabricacao(rs.getInt("ano_fabricacao"));
+                veiculo.setKmAtual(rs.getDouble("km_atual"));
+                veiculo.setKmUltimaManutencao(rs.getDouble("km_ultima_manutencao"));
+                veiculo.setStatus(rs.getString("status"));
                 
                 veiculos.add(veiculo);
             }

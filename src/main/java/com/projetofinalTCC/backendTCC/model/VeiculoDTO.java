@@ -3,10 +3,12 @@ package com.projetofinalTCC.backendTCC.model;
 public class VeiculoDTO {
     
     private Long idVeiculo;
-    private String modelo;
     private String placa;
-    private String marca;
-    private Integer ano;
+    private String modelo;
+    private Integer anoFabricacao;
+    private Double kmAtual;
+    private Double kmUltimaManutencao;
+    private String status;
 
     public Long getIdVeiculo() {
         return idVeiculo;
@@ -14,14 +16,6 @@ public class VeiculoDTO {
 
     public void setIdVeiculo(Long idVeiculo) {
         this.idVeiculo = idVeiculo;
-    }
-
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
     }
 
     public String getPlaca() {
@@ -32,19 +26,43 @@ public class VeiculoDTO {
         this.placa = placa;
     }
 
-    public String getMarca() {
-        return marca;
+    public String getModelo() {
+        return modelo;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
-    public Integer getAno() {
-        return ano;
+    public Integer getAnoFabricacao() {
+        return anoFabricacao;
     }
 
-    public void setAno(Integer ano) {
-        this.ano = ano;
+    public void setAnoFabricacao(Integer anoFabricacao) {
+        this.anoFabricacao = anoFabricacao;
+    }
+
+    public Double getKmAtual() {
+        return kmAtual;
+    }
+
+    public void setKmAtual(Double kmAtual) {
+        this.kmAtual = kmAtual;
+    }
+
+    public Double getKmUltimaManutencao() {
+        return kmUltimaManutencao;
+    }
+
+    public void setKmUltimaManutencao(Double kmUltimaManutencao) {
+        this.kmUltimaManutencao = kmUltimaManutencao;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,7 +1,15 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.projetofinalTCC.backendTCC.model;
 
+/**
+ *
+ * @author joaov
+ */
 public class UsuarioDTO {
-    
+
     private Long idUsuario;
     private String nome;
     private String email;
@@ -9,7 +17,7 @@ public class UsuarioDTO {
     private Cargo cargo;
 
     public enum Cargo {
-        ADMINISTRADOR, MOTORISTA
+        ADMIN, MOTORISTA, GESTOR_FROTA
     }
 
     public Long getIdUsuario() {
