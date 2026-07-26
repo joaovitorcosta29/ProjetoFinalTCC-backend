@@ -2,9 +2,10 @@ package com.projetofinalTCC.backendTCC.service;
 
 import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
 import com.projetofinalTCC.backendTCC.repository.VeiculoRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class VeiculoService {
@@ -12,10 +13,10 @@ public class VeiculoService {
     @Autowired
     private VeiculoRepository veiculoRepository;
 
-    public void registrar(VeiculoDTO veiculo) {
+    public void cadastrar(VeiculoDTO veiculo) {
         int resultado = veiculoRepository.registrar(veiculo);
         if (resultado == 0) {
-            throw new RuntimeException("Erro ao registrar veículo no banco de dados.");
+            throw new RuntimeException("Erro ao cadastrar o veículo no banco de dados.");
         }
     }
 

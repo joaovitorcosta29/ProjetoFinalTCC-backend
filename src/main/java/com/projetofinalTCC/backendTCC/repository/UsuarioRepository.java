@@ -23,7 +23,13 @@ public class UsuarioRepository {
             
             String cargoString = "MOTORISTA";
             if (usuario.getCargo() != null) {
-                cargoString = usuario.getCargo() == UsuarioDTO.Cargo.ADMINISTRADOR ? "ADMIN" : "MOTORISTA";
+                if (usuario.getCargo() == UsuarioDTO.Cargo.ADMIN) {
+                    cargoString = "ADMIN";
+                } else if (usuario.getCargo() == UsuarioDTO.Cargo.GESTOR_FROTA) {
+                    cargoString = "GESTOR_FROTA";
+                } else {
+                    cargoString = "MOTORISTA";
+                }
             }
             stmt.setString(4, cargoString);
 
@@ -57,8 +63,12 @@ public class UsuarioRepository {
                 usuario.setSenha(rs.getString("senha"));
                 
                 String cargoBanco = rs.getString("cargo");
+                
+                // CORREÇÃO: Tratamento correto para todos os cargos possíveis
                 if ("ADMIN".equals(cargoBanco)) {
-                    usuario.setCargo(UsuarioDTO.Cargo.ADMINISTRADOR);
+                    usuario.setCargo(UsuarioDTO.Cargo.ADMIN);
+                } else if ("GESTOR_FROTA".equals(cargoBanco)) {
+                    usuario.setCargo(UsuarioDTO.Cargo.GESTOR_FROTA);
                 } else {
                     usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
                 }

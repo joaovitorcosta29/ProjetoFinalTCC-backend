@@ -1,5 +1,6 @@
 package com.projetofinalTCC.backendTCC.controller;
 
+import com.projetofinalTCC.backendTCC.model.FinalizarViagemDTO;
 import com.projetofinalTCC.backendTCC.model.ViagemDTO;
 import com.projetofinalTCC.backendTCC.service.ViagemService;
 import java.util.List;
@@ -29,5 +30,11 @@ public class ViagemController {
     public ResponseEntity<List<ViagemDTO>> listar() {
         List<ViagemDTO> viagens = viagemService.listarTodas();
         return ResponseEntity.ok(viagens);
+    }
+
+    @PostMapping("/finalizar")
+    public ResponseEntity<String> finalizar(@RequestBody FinalizarViagemDTO dto) {
+        viagemService.finalizarViagem(dto.getIdViagem(), dto.getKmFinal());
+        return ResponseEntity.ok("Viagem finalizada com sucesso");
     }
 }
