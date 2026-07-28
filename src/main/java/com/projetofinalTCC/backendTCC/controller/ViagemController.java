@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,5 +37,14 @@ public class ViagemController {
     public ResponseEntity<String> finalizar(@RequestBody FinalizarViagemDTO dto) {
         viagemService.finalizarViagem(dto.getIdViagem(), dto.getKmFinal());
         return ResponseEntity.ok("Viagem finalizada com sucesso");
+    }
+
+    @PostMapping("/assumir")
+    public ResponseEntity<String> assumirViagem(
+            @RequestParam Long idViagem,
+            @RequestParam Integer idUsuario) {
+
+        viagemService.assumirViagem(idViagem, idUsuario);
+        return ResponseEntity.ok("Viagem vinculada ao motorista com sucesso!");
     }
 }
