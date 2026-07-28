@@ -1,6 +1,7 @@
 package com.projetofinalTCC.backendTCC.service;
 
 import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
+import com.projetofinalTCC.backendTCC.model.VeiculoDTO.StatusVeiculo;
 import com.projetofinalTCC.backendTCC.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,4 +24,20 @@ public class VeiculoService {
     public List<VeiculoDTO> listarTodos() {
         return veiculoRepository.listarTodos();
     }
+
+    public VeiculoDTO buscarPorId(Long idVeiculo) {
+        VeiculoDTO veiculo = veiculoRepository.buscarPorId(idVeiculo);
+        if (veiculo == null) {
+            throw new RuntimeException("Veículo não encontrado.");
+        }
+        return veiculo;
+    }
+
+    public void alterarStatus(Long idVeiculo, StatusVeiculo status) {
+        int resultado = veiculoRepository.atualizarStatus(idVeiculo, status);
+        if (resultado == 0) {
+            throw new RuntimeException("Erro ao atualizar o status do veículo no banco de dados.");
+        }
+    }
+
 }

@@ -8,7 +8,27 @@ public class VeiculoDTO {
     private Integer anoFabricacao;
     private Double kmAtual;
     private Double kmUltimaManutencao;
-    private String status;
+    private StatusVeiculo status;
+
+    public enum StatusVeiculo {
+        DISPONIVEL,
+        EM_USO,
+        MANUTENCAO,
+        DESATIVADO
+    }
+
+    public VeiculoDTO() {
+    }
+
+    public VeiculoDTO(Long idVeiculo, String placa, String modelo, Integer anoFabricacao, Double kmAtual, Double kmUltimaManutencao, StatusVeiculo status) {
+        this.idVeiculo = idVeiculo;
+        this.placa = placa;
+        this.modelo = modelo;
+        this.anoFabricacao = anoFabricacao;
+        this.kmAtual = kmAtual;
+        this.kmUltimaManutencao = kmUltimaManutencao;
+        this.status = status;
+    }
 
     public Long getIdVeiculo() {
         return idVeiculo;
@@ -58,11 +78,11 @@ public class VeiculoDTO {
         this.kmUltimaManutencao = kmUltimaManutencao;
     }
 
-    public String getStatus() {
+    public StatusVeiculo getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusVeiculo status) {
         this.status = status;
     }
 }
