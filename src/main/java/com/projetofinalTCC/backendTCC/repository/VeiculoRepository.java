@@ -18,7 +18,7 @@ public class VeiculoRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                "INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status) VALUES (?, ?, ?, ?, ?, ?)"
+                    "INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status) VALUES (?, ?, ?, ?, ?, ?)"
             );
 
             stmt.setString(1, veiculo.getPlaca());
@@ -26,7 +26,7 @@ public class VeiculoRepository {
             stmt.setInt(3, veiculo.getAnoFabricacao());
             stmt.setDouble(4, veiculo.getKmAtual());
             stmt.setDouble(5, veiculo.getKmUltimaManutencao());
-            
+
             stmt.setString(6, veiculo.getStatus() != null ? veiculo.getStatus().name() : null);
 
             linhasAfetadas = stmt.executeUpdate();
@@ -52,7 +52,7 @@ public class VeiculoRepository {
                 veiculo.setAnoFabricacao(rs.getInt("ano_fabricacao"));
                 veiculo.setKmAtual(rs.getDouble("km_atual"));
                 veiculo.setKmUltimaManutencao(rs.getDouble("km_ultima_manutencao"));
-                
+
                 String statusStr = rs.getString("status");
                 if (statusStr != null) {
                     veiculo.setStatus(StatusVeiculo.valueOf(statusStr));
@@ -83,7 +83,7 @@ public class VeiculoRepository {
                 veiculo.setAnoFabricacao(rs.getInt("ano_fabricacao"));
                 veiculo.setKmAtual(rs.getDouble("km_atual"));
                 veiculo.setKmUltimaManutencao(rs.getDouble("km_ultima_manutencao"));
-                
+
                 String statusStr = rs.getString("status");
                 if (statusStr != null) {
                     veiculo.setStatus(StatusVeiculo.valueOf(statusStr));
@@ -112,5 +112,27 @@ public class VeiculoRepository {
         }
         return linhasAfetadas;
     }
+
+    public int editarVeiculo(VeiculoDTO veiculo) {
+        int linhasAfetadas = 0;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET placa = ?, modelo = ? , ano_fabricacao = ? , km_atual = ? , km_ultima_manutencao = ? WHERE id_veiculo = ?");
+
+            stmt.setString(1, veiculo.getPlaca());
+            stmt.setString(2, veiculo.getModelo());
+            stmt.setInt(3, veiculo.getAnoFabricacao());
+            stmt.setDouble(4, veiculo.getKmAtual());
+            stmt.setDouble(5, veiculo.getKmUltimaManutencao());
+            stmt.setLong(6, veiculo.getIdVeiculo());
+
+            linhasAfetadas = stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return linhasAfetadas;
+    }
+
 
 }

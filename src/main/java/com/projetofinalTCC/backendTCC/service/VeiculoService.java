@@ -39,5 +39,14 @@ public class VeiculoService {
             throw new RuntimeException("Erro ao atualizar o status do veículo no banco de dados.");
         }
     }
-
+    /*
+    
+    public VeiculoDTO editarVeiculo(VeiculoDTO veiculo){
+        int resultado = veiculoRepository.editarVeiculo(veiculo);
+        if (resultado == 0) {
+            throw new RuntimeException("Erro ao atualizar o veículo no banco de dados.");
+        }
+        return ;
+    }
+    */  
 }

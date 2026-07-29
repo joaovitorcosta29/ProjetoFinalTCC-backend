@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.List; 
 
 @RestController
 @RequestMapping("/veiculos")
@@ -51,4 +51,10 @@ public class VeiculoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    /*
+    @PutMapping("/editar")
+    public VeiculoDTO editarVeiculo(@RequestBody VeiculoDTO dto){
+        return veiculoService.editarVeiculo(dto);
+    }
+    */
 }
