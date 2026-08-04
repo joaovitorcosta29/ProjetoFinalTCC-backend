@@ -1,7 +1,6 @@
 package com.projetofinalTCC.backendTCC.controller;
 
 import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
-import com.projetofinalTCC.backendTCC.model.VeiculoDTO.StatusVeiculo;
 import com.projetofinalTCC.backendTCC.service.VeiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,10 +50,14 @@ public class VeiculoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    /*
-    @PutMapping("/editar")
-    public VeiculoDTO editarVeiculo(@RequestBody VeiculoDTO dto){
-        return veiculoService.editarVeiculo(dto);
+
+    @PutMapping("/atualizar")
+    public ResponseEntity<String> atualizarVeiculo(@RequestBody VeiculoDTO veiculo) {
+        try {
+            veiculoService.editarVeiculo(veiculo);
+            return ResponseEntity.ok("Veículo atualizado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-    */
 }

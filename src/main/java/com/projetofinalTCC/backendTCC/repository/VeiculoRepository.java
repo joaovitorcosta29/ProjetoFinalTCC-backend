@@ -117,14 +117,15 @@ public class VeiculoRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET placa = ?, modelo = ? , ano_fabricacao = ? , km_atual = ? , km_ultima_manutencao = ? WHERE id_veiculo = ?");
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET placa = ?, modelo = ?, ano_fabricacao = ?, km_atual = ?, km_ultima_manutencao = ?, status = ? WHERE id_veiculo = ?");
 
             stmt.setString(1, veiculo.getPlaca());
             stmt.setString(2, veiculo.getModelo());
             stmt.setInt(3, veiculo.getAnoFabricacao());
             stmt.setDouble(4, veiculo.getKmAtual());
             stmt.setDouble(5, veiculo.getKmUltimaManutencao());
-            stmt.setLong(6, veiculo.getIdVeiculo());
+            stmt.setString(6, veiculo.getStatus() != null ? veiculo.getStatus().name() : null);
+            stmt.setLong(7, veiculo.getIdVeiculo());
 
             linhasAfetadas = stmt.executeUpdate();
 
@@ -133,6 +134,5 @@ public class VeiculoRepository {
         }
         return linhasAfetadas;
     }
-
-
+    
 }

@@ -39,14 +39,15 @@ public class VeiculoService {
             throw new RuntimeException("Erro ao atualizar o status do veículo no banco de dados.");
         }
     }
-    /*
-    
-    public VeiculoDTO editarVeiculo(VeiculoDTO veiculo){
-        int resultado = veiculoRepository.editarVeiculo(veiculo);
-        if (resultado == 0) {
-            throw new RuntimeException("Erro ao atualizar o veículo no banco de dados.");
+
+    public void editarVeiculo(VeiculoDTO veiculo) {
+        if (veiculo.getIdVeiculo() == null) {
+            throw new IllegalArgumentException("ID do veículo não fornecido.");
         }
-        return ;
+        int linhas = veiculoRepository.editarVeiculo(veiculo);
+        if (linhas == 0) {
+            throw new RuntimeException("Não foi possível atualizar o veículo.");
+        }
     }
-    */  
+
 }
