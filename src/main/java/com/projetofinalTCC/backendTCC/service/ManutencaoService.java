@@ -22,11 +22,14 @@ public class ManutencaoService {
     @Autowired
     private ManutencaoRepository repository;
 
-    public int registrar(ManutencaoDTO manutencao) {
-        if (manutencao.getStatusManutencao() == null) {
-            manutencao.setStatusManutencao(StatusManutencao.PENDENTE);
+    public String registrar(ManutencaoDTO manutencao) {
+        manutencao.setStatusManutencao(StatusManutencao.PENDENTE);
+        
+        int resultado = repository.registrar(manutencao);
+        if (resultado > 0) {
+            return "Manutenção cadastrada com sucesso!";
         }
-        return repository.registrar(manutencao);
+        return "Erro ao cadastrar manutenção.";
     }
 
     public List<ManutencaoDTO> listarTodas() {
@@ -41,15 +44,27 @@ public class ManutencaoService {
         return repository.listarPorVeiculo(idVeiculo);
     }
 
-    public int atualizarStatus(Integer id, StatusManutencao novoStatus) {
-        return repository.atualizarStatus(id, novoStatus);
+    public String atualizarStatus(Integer id, StatusManutencao novoStatus) {
+        int resultado = repository.atualizarStatus(id, novoStatus);
+        if (resultado > 0) {
+            return "Status da manutenção atualizado com sucesso!";
+        }
+        return "Erro ao atualizar status da manutenção.";
     }
 
-    public int editarManutencao(ManutencaoDTO manutencao) {
-        return repository.editarManutencao(manutencao);
+    public String editarManutencao(ManutencaoDTO manutencao) {
+        int resultado = repository.editarManutencao(manutencao);
+        if (resultado > 0) {
+            return "Manutenção atualizada com sucesso!";
+        }
+        return "Erro ao atualizar manutenção.";
     }
 
-    public int deletar(Integer id) {
-        return repository.deletar(id);
+    public String deletar(Integer id) {
+        int resultado = repository.deletar(id);
+        if (resultado > 0) {
+            return "Manutenção deletada com sucesso!";
+        }
+        return "Erro ao deletar manutenção.";
     }
 }
