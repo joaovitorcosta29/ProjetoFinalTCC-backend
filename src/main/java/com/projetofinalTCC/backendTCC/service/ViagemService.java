@@ -85,4 +85,20 @@ public class ViagemService {
             throw new RuntimeException("Falha ao atualizar o status e KM do veículo no banco de dados.");
         }
     }
+
+    public void editarViagem(ViagemDTO viagem) {
+        if (viagem.getIdViagem() == null) {
+            throw new IllegalArgumentException("ID da viagem não fornecido.");
+        }
+
+        ViagemDTO existente = viagemRepository.buscarPorId(viagem.getIdViagem());
+        if (existente == null) {
+            throw new RuntimeException("Viagem não encontrada para o ID: " + viagem.getIdViagem());
+        }
+
+        int linhas = viagemRepository.editarViagem(viagem);
+        if (linhas == 0) {
+            throw new RuntimeException("Não foi possível atualizar a viagem.");
+        }
+    }
 }

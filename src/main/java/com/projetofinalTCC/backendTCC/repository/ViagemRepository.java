@@ -281,4 +281,54 @@ public class ViagemRepository {
         }
         return linhasAfetadas;
     }
+
+    public int editarViagem(ViagemDTO viagem) {
+        int linhasAfetadas = 0;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE tb_viagens SET id_usuario = ?, id_veiculo = ?, cidade_destino = ?, estado_destino = ?, "
+                    + "km_inicial = ?, km_final = ?, status_viagem = ?, alerta_manutencao = ? WHERE id_viagem = ?"
+            );
+
+            if (viagem.getIdUsuario() != null) {
+                stmt.setInt(1, viagem.getIdUsuario());
+            } else {
+                stmt.setNull(1, Types.INTEGER);
+            }
+
+            stmt.setInt(2, viagem.getIdVeiculo());
+            stmt.setString(3, viagem.getCidadeDestino());
+
+            String estadoStr = viagem.getEstadoDestino() != null ? viagem.getEstadoDestino().name() : null;
+            stmt.setString(4, estadoStr);
+
+            if (viagem.getKmInicial() != null) {
+                stmt.setDouble(5, viagem.getKmInicial());
+            } else {
+                stmt.setNull(5, Types.DOUBLE);
+            }
+
+            if (viagem.getKmFinal() != null) {
+                stmt.setDouble(6, viagem.getKmFinal());
+            } else {
+                stmt.setNull(6, Types.DOUBLE);
+            }
+
+            String statusStr = viagem.getStatusViagem() != null ? viagem.getStatusViagem().name() : null;
+            stmt.setString(7, statusStr);
+
+            String alertaStr = viagem.getAlertaManutencao() != null ? viagem.getAlertaManutencao().name() : null;
+            stmt.setString(8, alertaStr);
+
+            stmt.setLong(9, viagem.getIdViagem());
+
+            linhasAfetadas = stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar viagem: " + e.getMessage(), e);
+        }
+        return linhasAfetadas;
+    }
 }
