@@ -12,6 +12,28 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public void registrar(UsuarioDTO usuario) {
+        if (usuario.getNome() == null || usuario.getNome().trim().length() < 10) {
+            throw new RuntimeException("O nome deve ter no mínimo 10 caracteres. Digite seu nome completo.");
+        }
+
+        if (usuario.getSenha() == null || usuario.getSenha().length() < 8) {
+            throw new RuntimeException("A senha deve ter no mínimo 8 caracteres.");
+        }
+
+        if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("O e-mail é obrigatório.");
+        }
+
+        UsuarioDTO existente = usuarioRepository.buscarPorEmail(usuario.getEmail());
+        if (existente != null) {
+            throw new RuntimeException("Já existe uma conta cadastrada com este e-mail.");
+        }
+
+        // Cadastro público só pode criar contas de MOTORISTA ou GESTOR_FROTA, nunca ADMIN
+        if (usuario.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA) {
+            usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
+        }
+
         int resultado = usuarioRepository.registrar(usuario);
         if (resultado == 0) {
             throw new RuntimeException("Erro ao registrar usuário no banco de dados.");

@@ -48,10 +48,21 @@ public class ViagemService {
             throw new RuntimeException("Esta viagem já foi finalizada.");
         }
 
+        if (viagem.getIdUsuario() != null) {
+            throw new RuntimeException("Esta viagem já foi assumida por outro motorista.");
+        }
+
+        ViagemDTO viagemEmAndamento = viagemRepository.buscarViagemEmAndamentoDoUsuario(idUsuario);
+        if (viagemEmAndamento != null) {
+            throw new RuntimeException("Você já possui uma viagem em andamento. Finalize-a antes de assumir outra.");
+        }
+
         int linhas = viagemRepository.atribuirMotoristaEViagem(idViagem, idUsuario);
         if (linhas == 0) {
             throw new RuntimeException("Falha ao associar o motorista à viagem.");
         }
+
+        viagemRepository.atualizarStatusViagem(idViagem, "EM_ANDAMENTO");
     }
 
     public List<ViagemDTO> listarTodas() {
@@ -94,6 +105,10 @@ public class ViagemService {
         ViagemDTO existente = viagemRepository.buscarPorId(viagem.getIdViagem());
         if (existente == null) {
             throw new RuntimeException("Viagem não encontrada para o ID: " + viagem.getIdViagem());
+        }
+
+        if (existente.getStatusViagem() != null && existente.getStatusViagem() != ViagemDTO.StatusViagem.DISPONIVEL) {
+            throw new RuntimeException("Só é possível editar viagens que ainda não foram assumidas por um motorista.");
         }
 
         int linhas = viagemRepository.editarViagem(viagem);

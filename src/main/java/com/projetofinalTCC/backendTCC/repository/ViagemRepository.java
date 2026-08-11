@@ -39,8 +39,8 @@ public class ViagemRepository {
                 stmt.setNull(5, Types.DOUBLE);
             }
 
-            // Status da viagem padrão deve ser EM_ANDAMENTO quando iniciada
-            String status = viagem.getStatusViagem() != null ? viagem.getStatusViagem().name() : "EM_ANDAMENTO";
+            // Uma viagem recém-cadastrada começa disponível, sem motorista atribuído
+            String status = viagem.getStatusViagem() != null ? viagem.getStatusViagem().name() : "DISPONIVEL";
             stmt.setString(6, status);
 
             linhasAfetadas = stmt.executeUpdate();
@@ -233,6 +233,29 @@ public class ViagemRepository {
         return status;
     }
 
+    public ViagemDTO buscarViagemEmAndamentoDoUsuario(Integer idUsuario) {
+        ViagemDTO viagem = null;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT * FROM tb_viagens WHERE id_usuario = ? AND status_viagem = 'EM_ANDAMENTO' LIMIT 1"
+            );
+            stmt.setInt(1, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                viagem = mapearViagem(rs);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao verificar viagens em andamento do usuário: " + e.getMessage(), e);
+        }
+        return viagem;
+    }
+
     public int atribuirMotoristaEViagem(Long idViagem, Integer idUsuario) {
         int linhasAfetadas = 0;
         try {
@@ -248,6 +271,25 @@ public class ViagemRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao atribuir motorista à viagem: " + e.getMessage(), e);
+        }
+        return linhasAfetadas;
+    }
+
+    public int atualizarStatusViagem(Long idViagem, String status) {
+        int linhasAfetadas = 0;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE tb_viagens SET status_viagem = ? WHERE id_viagem = ?"
+            );
+            stmt.setString(1, status);
+            stmt.setLong(2, idViagem);
+
+            linhasAfetadas = stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar status da viagem: " + e.getMessage(), e);
         }
         return linhasAfetadas;
     }

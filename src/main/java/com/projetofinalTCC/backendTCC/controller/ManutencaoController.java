@@ -9,6 +9,7 @@ import com.projetofinalTCC.backendTCC.model.ManutencaoDTO.StatusManutencao;
 import com.projetofinalTCC.backendTCC.service.ManutencaoService;  
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -53,9 +54,14 @@ public class ManutencaoController {
     }
 
     @PutMapping("/{id}")
-    public String editarManutencao(@PathVariable Integer id, @RequestBody ManutencaoDTO manutencao) {
-        manutencao.setIdManutencao(id);
-        return Manutencaoservice.editarManutencao(manutencao);
+    public ResponseEntity<String> editarManutencao(@PathVariable Integer id, @RequestBody ManutencaoDTO manutencao) {
+        try {
+            manutencao.setIdManutencao(id);
+            String resultado = Manutencaoservice.editarManutencao(manutencao);
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PatchMapping("/{id}/status")

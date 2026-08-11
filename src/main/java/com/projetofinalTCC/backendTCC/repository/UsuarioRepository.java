@@ -41,6 +41,37 @@ public class UsuarioRepository {
         return linhasAfetadas;
     }
 
+    public UsuarioDTO buscarPorEmail(String email) {
+        UsuarioDTO usuario = null;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tb_usuario WHERE email = ?");
+            stmt.setString(1, email);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                usuario = new UsuarioDTO();
+                usuario.setIdUsuario(rs.getLong("id_usuario"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setEmail(rs.getString("email"));
+
+                String cargoBanco = rs.getString("cargo");
+                if ("ADMIN".equals(cargoBanco)) {
+                    usuario.setCargo(UsuarioDTO.Cargo.ADMIN);
+                } else if ("GESTOR_FROTA".equals(cargoBanco)) {
+                    usuario.setCargo(UsuarioDTO.Cargo.GESTOR_FROTA);
+                } else {
+                    usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuario;
+    }
+
     public UsuarioDTO Logar(String email, String senha) {
         UsuarioDTO usuario = null;
         try {

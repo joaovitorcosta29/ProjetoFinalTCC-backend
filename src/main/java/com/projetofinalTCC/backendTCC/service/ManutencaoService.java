@@ -53,6 +53,15 @@ public class ManutencaoService {
     }
 
     public String editarManutencao(ManutencaoDTO manutencao) {
+        ManutencaoDTO existente = repository.buscarPorId(manutencao.getIdManutencao());
+        if (existente == null) {
+            throw new RuntimeException("Manutenção não encontrada.");
+        }
+
+        if (existente.getStatusManutencao() != null && existente.getStatusManutencao() != StatusManutencao.PENDENTE) {
+            throw new RuntimeException("Só é possível editar manutenções que ainda estão pendentes.");
+        }
+
         int resultado = repository.editarManutencao(manutencao);
         if (resultado > 0) {
             return "Manutenção atualizada com sucesso!";
