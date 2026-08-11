@@ -18,7 +18,7 @@ public class VeiculoRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status) VALUES (?, ?, ?, ?, ?, ?)"
+                    "INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status, alerta_manutencao) VALUES (?, ?, ?, ?, ?, ?, ?)"
             );
 
             stmt.setString(1, veiculo.getPlaca());
@@ -28,6 +28,9 @@ public class VeiculoRepository {
             stmt.setDouble(5, veiculo.getKmUltimaManutencao());
 
             stmt.setString(6, veiculo.getStatus() != null ? veiculo.getStatus().name() : null);
+
+            String alerta = veiculo.getAlertaManutencao() != null ? veiculo.getAlertaManutencao().name() : "OK";
+            stmt.setString(7, alerta);
 
             linhasAfetadas = stmt.executeUpdate();
 
@@ -56,6 +59,14 @@ public class VeiculoRepository {
                 String statusStr = rs.getString("status");
                 if (statusStr != null) {
                     veiculo.setStatus(StatusVeiculo.valueOf(statusStr));
+                }
+
+                String alertaStr = rs.getString("alerta_manutencao");
+                if (alertaStr != null && !alertaStr.isBlank()) {
+                    try {
+                        veiculo.setAlertaManutencao(VeiculoDTO.AlertaManutencao.valueOf(alertaStr.trim()));
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 veiculos.add(veiculo);
@@ -88,6 +99,14 @@ public class VeiculoRepository {
                 if (statusStr != null) {
                     veiculo.setStatus(StatusVeiculo.valueOf(statusStr));
                 }
+
+                String alertaStr = rs.getString("alerta_manutencao");
+                if (alertaStr != null && !alertaStr.isBlank()) {
+                    try {
+                        veiculo.setAlertaManutencao(VeiculoDTO.AlertaManutencao.valueOf(alertaStr.trim()));
+                    } catch (Exception ignored) {
+                    }
+                }
             }
 
         } catch (SQLException e) {
@@ -117,7 +136,7 @@ public class VeiculoRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET placa = ?, modelo = ?, ano_fabricacao = ?, km_atual = ?, km_ultima_manutencao = ?, status = ? WHERE id_veiculo = ?");
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET placa = ?, modelo = ?, ano_fabricacao = ?, km_atual = ?, km_ultima_manutencao = ?, status = ?, alerta_manutencao = ? WHERE id_veiculo = ?");
 
             stmt.setString(1, veiculo.getPlaca());
             stmt.setString(2, veiculo.getModelo());
@@ -125,7 +144,8 @@ public class VeiculoRepository {
             stmt.setDouble(4, veiculo.getKmAtual());
             stmt.setDouble(5, veiculo.getKmUltimaManutencao());
             stmt.setString(6, veiculo.getStatus() != null ? veiculo.getStatus().name() : null);
-            stmt.setLong(7, veiculo.getIdVeiculo());
+            stmt.setString(7, veiculo.getAlertaManutencao() != null ? veiculo.getAlertaManutencao().name() : "OK");
+            stmt.setLong(8, veiculo.getIdVeiculo());
 
             linhasAfetadas = stmt.executeUpdate();
 

@@ -18,7 +18,7 @@ public class ViagemRepository {
         try {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO tb_viagens (id_usuario, id_veiculo, cidade_destino, estado_destino, km_inicial, status_viagem, alerta_manutencao) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                    "INSERT INTO tb_viagens (id_usuario, id_veiculo, cidade_destino, estado_destino, km_inicial, status_viagem) VALUES (?, ?, ?, ?, ?, ?)"
             );
 
             if (viagem.getIdUsuario() != null) {
@@ -41,10 +41,7 @@ public class ViagemRepository {
 
             // Status da viagem padrão deve ser EM_ANDAMENTO quando iniciada
             String status = viagem.getStatusViagem() != null ? viagem.getStatusViagem().name() : "EM_ANDAMENTO";
-            String alerta = viagem.getAlertaManutencao() != null ? viagem.getAlertaManutencao().name() : "OK";
-
             stmt.setString(6, status);
-            stmt.setString(7, alerta);
 
             linhasAfetadas = stmt.executeUpdate();
             stmt.close();
@@ -212,14 +209,6 @@ public class ViagemRepository {
             }
         }
 
-        String alerta = rs.getString("alerta_manutencao");
-        if (alerta != null && !alerta.isBlank()) {
-            try {
-                viagem.setAlertaManutencao(ViagemDTO.AlertaManutencao.valueOf(alerta.trim()));
-            } catch (Exception ignored) {
-            }
-        }
-
         return viagem;
     }
 
@@ -288,7 +277,7 @@ public class ViagemRepository {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(
                     "UPDATE tb_viagens SET id_usuario = ?, id_veiculo = ?, cidade_destino = ?, estado_destino = ?, "
-                    + "km_inicial = ?, km_final = ?, status_viagem = ?, alerta_manutencao = ? WHERE id_viagem = ?"
+                    + "km_inicial = ?, km_final = ?, status_viagem = ? WHERE id_viagem = ?"
             );
 
             if (viagem.getIdUsuario() != null) {
@@ -318,10 +307,7 @@ public class ViagemRepository {
             String statusStr = viagem.getStatusViagem() != null ? viagem.getStatusViagem().name() : null;
             stmt.setString(7, statusStr);
 
-            String alertaStr = viagem.getAlertaManutencao() != null ? viagem.getAlertaManutencao().name() : null;
-            stmt.setString(8, alertaStr);
-
-            stmt.setLong(9, viagem.getIdViagem());
+            stmt.setLong(8, viagem.getIdViagem());
 
             linhasAfetadas = stmt.executeUpdate();
             stmt.close();
