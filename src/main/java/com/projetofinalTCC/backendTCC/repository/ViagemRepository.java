@@ -39,7 +39,6 @@ public class ViagemRepository {
                 stmt.setNull(5, Types.DOUBLE);
             }
 
-            // Uma viagem recém-cadastrada começa disponível, sem motorista atribuído
             String status = viagem.getStatusViagem() != null ? viagem.getStatusViagem().name() : "DISPONIVEL";
             stmt.setString(6, status);
 
@@ -271,6 +270,24 @@ public class ViagemRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao atribuir motorista à viagem: " + e.getMessage(), e);
+        }
+        return linhasAfetadas;
+    }
+
+    public int desvincularMotorista(Long idViagem) {
+        int linhasAfetadas = 0;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE tb_viagens SET id_usuario = NULL WHERE id_viagem = ?"
+            );
+            stmt.setLong(1, idViagem);
+
+            linhasAfetadas = stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao cancelar viagem: " + e.getMessage(), e);
         }
         return linhasAfetadas;
     }

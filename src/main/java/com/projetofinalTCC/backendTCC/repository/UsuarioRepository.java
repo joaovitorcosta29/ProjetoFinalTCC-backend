@@ -95,7 +95,6 @@ public class UsuarioRepository {
                 
                 String cargoBanco = rs.getString("cargo");
                 
-                // CORREÇÃO: Tratamento correto para todos os cargos possíveis
                 if ("ADMIN".equals(cargoBanco)) {
                     usuario.setCargo(UsuarioDTO.Cargo.ADMIN);
                 } else if ("GESTOR_FROTA".equals(cargoBanco)) {

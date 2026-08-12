@@ -6,7 +6,9 @@ package com.projetofinalTCC.backendTCC.service;
 
 import com.projetofinalTCC.backendTCC.model.ManutencaoDTO;
 import com.projetofinalTCC.backendTCC.model.ManutencaoDTO.StatusManutencao;
+import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
 import com.projetofinalTCC.backendTCC.repository.ManutencaoRepository;
+import com.projetofinalTCC.backendTCC.repository.VeiculoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,18 @@ public class ManutencaoService {
     @Autowired
     private ManutencaoRepository repository;
 
+    @Autowired
+    private VeiculoRepository veiculoRepository;
+
     public String registrar(ManutencaoDTO manutencao) {
+        boolean possuiManutencaoAberta = repository.listarPorVeiculo(manutencao.getIdVeiculo()).stream()
+                .anyMatch(m -> m.getStatusManutencao() == StatusManutencao.PENDENTE
+                        || m.getStatusManutencao() == StatusManutencao.EM_ANDAMENTO);
+
+        if (possuiManutencaoAberta) {
+            throw new RuntimeException("Este veículo já possui uma manutenção pendente ou em andamento.");
+        }
+
         manutencao.setStatusManutencao(StatusManutencao.PENDENTE);
         
         int resultado = repository.registrar(manutencao);
@@ -45,11 +58,30 @@ public class ManutencaoService {
     }
 
     public String atualizarStatus(Integer id, StatusManutencao novoStatus) {
-        int resultado = repository.atualizarStatus(id, novoStatus);
-        if (resultado > 0) {
-            return "Status da manutenção atualizado com sucesso!";
+        ManutencaoDTO existente = repository.buscarPorId(id);
+        if (existente == null) {
+            throw new RuntimeException("Manutenção não encontrada.");
         }
-        return "Erro ao atualizar status da manutenção.";
+
+        if (existente.getStatusManutencao() == StatusManutencao.CONCLUIDA
+                || existente.getStatusManutencao() == StatusManutencao.CANCELADA) {
+            throw new RuntimeException("Não é possível alterar o status de uma manutenção já concluída ou cancelada.");
+        }
+
+        int resultado = repository.atualizarStatus(id, novoStatus);
+        if (resultado == 0) {
+            throw new RuntimeException("Erro ao atualizar status da manutenção.");
+        }
+
+        if (novoStatus == StatusManutencao.CONCLUIDA) {
+            VeiculoDTO veiculo = veiculoRepository.buscarPorId(existente.getIdVeiculo().longValue());
+            if (veiculo != null && veiculo.getKmAtual() != null) {
+                veiculoRepository.atualizarKmUltimaManutencao(veiculo.getIdVeiculo(), veiculo.getKmAtual());
+                veiculoRepository.recalcularAlertaManutencao(veiculo.getIdVeiculo());
+            }
+        }
+
+        return "Status da manutenção atualizado com sucesso!";
     }
 
     public String editarManutencao(ManutencaoDTO manutencao) {

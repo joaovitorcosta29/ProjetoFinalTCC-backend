@@ -6,7 +6,7 @@ package com.projetofinalTCC.backendTCC.controller;
 
 import com.projetofinalTCC.backendTCC.model.ManutencaoDTO;
 import com.projetofinalTCC.backendTCC.model.ManutencaoDTO.StatusManutencao;
-import com.projetofinalTCC.backendTCC.service.ManutencaoService;  
+import com.projetofinalTCC.backendTCC.service.ManutencaoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author joaov
  */
-
 @RestController
 @RequestMapping("/api/manutencoes")
 public class ManutencaoController {
@@ -34,8 +33,13 @@ public class ManutencaoController {
     private ManutencaoService Manutencaoservice;
 
     @PostMapping
-    public String cadastrarManutencao(@RequestBody ManutencaoDTO manutencao) {
-        return Manutencaoservice.registrar(manutencao);
+    public ResponseEntity<String> cadastrarManutencao(@RequestBody ManutencaoDTO manutencao) {
+        try {
+            String resultado = Manutencaoservice.registrar(manutencao);
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping
@@ -65,8 +69,13 @@ public class ManutencaoController {
     }
 
     @PatchMapping("/{id}/status")
-    public String atualizarStatus(@PathVariable Integer id, @RequestParam StatusManutencao novoStatus) {
-        return Manutencaoservice.atualizarStatus(id, novoStatus);
+    public ResponseEntity<String> atualizarStatus(@PathVariable Integer id, @RequestParam StatusManutencao novoStatus) {
+        try {
+            String resultado = Manutencaoservice.atualizarStatus(id, novoStatus);
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -19,6 +19,10 @@ public class VeiculoService {
             throw new RuntimeException("A placa deve ter exatamente 8 caracteres, no formato ABC-1234.");
         }
 
+        veiculo.setKmUltimaManutencao(0.0);
+        veiculo.setStatus(StatusVeiculo.DISPONIVEL);
+        veiculo.setAlertaManutencao(VeiculoDTO.AlertaManutencao.OK);
+
         int resultado = veiculoRepository.registrar(veiculo);
         if (resultado == 0) {
             throw new RuntimeException("Erro ao cadastrar o veículo no banco de dados.");
@@ -62,10 +66,16 @@ public class VeiculoService {
             throw new RuntimeException("A placa deve ter exatamente 8 caracteres, no formato ABC-1234.");
         }
 
+        veiculo.setStatus(existente.getStatus());
+        veiculo.setKmUltimaManutencao(existente.getKmUltimaManutencao());
+        veiculo.setAlertaManutencao(existente.getAlertaManutencao());
+
         int linhas = veiculoRepository.editarVeiculo(veiculo);
         if (linhas == 0) {
             throw new RuntimeException("Não foi possível atualizar o veículo.");
         }
+
+        veiculoRepository.recalcularAlertaManutencao(veiculo.getIdVeiculo());
     }
 
 }

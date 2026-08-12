@@ -29,7 +29,6 @@ public class UsuarioService {
             throw new RuntimeException("Já existe uma conta cadastrada com este e-mail.");
         }
 
-        // Cadastro público só pode criar contas de MOTORISTA ou GESTOR_FROTA, nunca ADMIN
         if (usuario.getCargo() != UsuarioDTO.Cargo.GESTOR_FROTA) {
             usuario.setCargo(UsuarioDTO.Cargo.MOTORISTA);
         }

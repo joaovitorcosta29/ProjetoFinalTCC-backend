@@ -1,6 +1,8 @@
 package com.projetofinalTCC.backendTCC.service;
 
+import com.projetofinalTCC.backendTCC.model.VeiculoDTO;
 import com.projetofinalTCC.backendTCC.model.ViagemDTO;
+import com.projetofinalTCC.backendTCC.repository.VeiculoRepository;
 import com.projetofinalTCC.backendTCC.repository.ViagemRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +14,10 @@ public class ViagemService {
     @Autowired
     private ViagemRepository viagemRepository;
 
-    public void registrar(ViagemDTO viagem) {
-        // 1. CORREÇÃO: Bloqueia cadastro se o veículo já estiver em uso
-        String statusVeiculo = viagemRepository.buscarStatusDoVeiculo(viagem.getIdVeiculo());
-        if ("EM_USO".equalsIgnoreCase(statusVeiculo)) {
-            throw new RuntimeException("Este veículo já está em uma viagem em andamento.");
-        }
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
-        // 2. Pega a quilometragem atual para o início da viagem
+    public void registrar(ViagemDTO viagem) {
         Double kmAtualDoVeiculo = viagemRepository.buscarKmAtualDoVeiculo(viagem.getIdVeiculo());
         if (kmAtualDoVeiculo == null) {
             throw new RuntimeException("Veículo não encontrado ou sem quilometragem cadastrada.");
@@ -31,12 +29,8 @@ public class ViagemService {
         if (resultado == 0) {
             throw new RuntimeException("Erro ao registrar viagem no banco de dados.");
         }
-        
-        // 3. CORREÇÃO: Altera o veículo para EM_USO (em vez de atualizarVeiculoKmEStatus)
-        viagemRepository.atualizarStatusVeiculo(viagem.getIdVeiculo(), "EM_USO");
     }
 
-    // NOVO MÉTODO: O motorista seleciona a viagem e grava o id_usuario dela
     public void assumirViagem(Long idViagem, Integer idUsuario) {
         ViagemDTO viagem = viagemRepository.buscarPorId(idViagem);
         
@@ -63,6 +57,7 @@ public class ViagemService {
         }
 
         viagemRepository.atualizarStatusViagem(idViagem, "EM_ANDAMENTO");
+        viagemRepository.atualizarStatusVeiculo(viagem.getIdVeiculo(), "EM_USO");
     }
 
     public List<ViagemDTO> listarTodas() {
@@ -76,7 +71,6 @@ public class ViagemService {
             throw new RuntimeException("Viagem não encontrada para o ID: " + idViagem);
         }
 
-        // CORREÇÃO: Garante que a viagem tem motorista antes de finalizar
         if (viagem.getIdUsuario() == null) {
             throw new RuntimeException("A viagem precisa ser assumida por um motorista antes de ser finalizada.");
         }
@@ -90,11 +84,12 @@ public class ViagemService {
             throw new RuntimeException("Falha ao atualizar o status da viagem no banco de dados.");
         }
 
-        // Devolve o veículo para DISPONIVEL e atualiza a KM com a informada no fim
         int linhasVeiculo = viagemRepository.atualizarVeiculoKmEStatus(viagem.getIdVeiculo(), kmFinal);
         if (linhasVeiculo == 0) {
             throw new RuntimeException("Falha ao atualizar o status e KM do veículo no banco de dados.");
         }
+
+        veiculoRepository.recalcularAlertaManutencao(viagem.getIdVeiculo().longValue());
     }
 
     public void editarViagem(ViagemDTO viagem) {
@@ -111,9 +106,43 @@ public class ViagemService {
             throw new RuntimeException("Só é possível editar viagens que ainda não foram assumidas por um motorista.");
         }
 
+        if (viagem.getIdVeiculo() == null) {
+            throw new RuntimeException("Selecione um veículo para a viagem.");
+        }
+
+        VeiculoDTO veiculoSelecionado = veiculoRepository.buscarPorId(viagem.getIdVeiculo().longValue());
+        if (veiculoSelecionado == null) {
+            throw new RuntimeException("Veículo selecionado não encontrado.");
+        }
+
+        viagem.setIdUsuario(existente.getIdUsuario());
+        viagem.setStatusViagem(existente.getStatusViagem());
+        viagem.setKmFinal(existente.getKmFinal());
+        viagem.setKmInicial(veiculoSelecionado.getKmAtual());
+
         int linhas = viagemRepository.editarViagem(viagem);
         if (linhas == 0) {
             throw new RuntimeException("Não foi possível atualizar a viagem.");
         }
+    }
+
+    public void cancelarViagem(Long idViagem, Integer idUsuario) {
+        ViagemDTO viagem = viagemRepository.buscarPorId(idViagem);
+
+        if (viagem == null) {
+            throw new RuntimeException("Viagem não encontrada para o ID: " + idViagem);
+        }
+
+        if (viagem.getStatusViagem() == ViagemDTO.StatusViagem.FINALIZADA) {
+            throw new RuntimeException("Não é possível cancelar uma viagem já finalizada.");
+        }
+
+        if (viagem.getIdUsuario() == null || !viagem.getIdUsuario().equals(idUsuario)) {
+            throw new RuntimeException("Você só pode cancelar uma viagem que você mesmo assumiu.");
+        }
+
+        viagemRepository.desvincularMotorista(idViagem);
+        viagemRepository.atualizarStatusViagem(idViagem, "DISPONIVEL");
+        viagemRepository.atualizarStatusVeiculo(viagem.getIdVeiculo(), "DISPONIVEL");
     }
 }

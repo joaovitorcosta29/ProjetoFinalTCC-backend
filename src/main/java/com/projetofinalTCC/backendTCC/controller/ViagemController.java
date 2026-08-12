@@ -58,4 +58,16 @@ public class ViagemController {
         viagemService.assumirViagem(idViagem, idUsuario);
         return ResponseEntity.ok("Viagem vinculada ao motorista com sucesso!");
     }
+
+    @PostMapping("/cancelar")
+    public ResponseEntity<String> cancelarViagem(
+            @RequestParam Long idViagem,
+            @RequestParam Integer idUsuario) {
+        try {
+            viagemService.cancelarViagem(idViagem, idUsuario);
+            return ResponseEntity.ok("Viagem cancelada com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

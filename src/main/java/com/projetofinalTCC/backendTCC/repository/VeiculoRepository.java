@@ -132,6 +132,54 @@ public class VeiculoRepository {
         return linhasAfetadas;
     }
 
+    public int atualizarKmUltimaManutencao(Long idVeiculo, Double km) {
+        int linhasAfetadas = 0;
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE tb_veiculos SET km_ultima_manutencao = ? WHERE id_veiculo = ?"
+            );
+            stmt.setDouble(1, km);
+            stmt.setLong(2, idVeiculo);
+
+            linhasAfetadas = stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar o km da última manutenção: " + e.getMessage(), e);
+        }
+        return linhasAfetadas;
+    }
+
+    public void recalcularAlertaManutencao(Long idVeiculo) {
+        VeiculoDTO veiculo = buscarPorId(idVeiculo);
+        if (veiculo == null || veiculo.getKmAtual() == null || veiculo.getKmUltimaManutencao() == null) {
+            return;
+        }
+
+        double diferenca = veiculo.getKmAtual() - veiculo.getKmUltimaManutencao();
+        String novoAlerta = diferenca >= 15000 ? "REVISAO_NECESSARIA" : "OK";
+
+        boolean precisaAtualizar = veiculo.getAlertaManutencao() == null
+                || !veiculo.getAlertaManutencao().name().equals(novoAlerta);
+
+        if (precisaAtualizar) {
+            try {
+                Connection conn = Conexao.conectar();
+                PreparedStatement stmt = conn.prepareStatement(
+                        "UPDATE tb_veiculos SET alerta_manutencao = ? WHERE id_veiculo = ?"
+                );
+                stmt.setString(1, novoAlerta);
+                stmt.setLong(2, idVeiculo);
+                stmt.executeUpdate();
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Erro ao recalcular alerta de manutenção: " + e.getMessage(), e);
+            }
+        }
+    }
+
     public int editarVeiculo(VeiculoDTO veiculo) {
         int linhasAfetadas = 0;
         try {
