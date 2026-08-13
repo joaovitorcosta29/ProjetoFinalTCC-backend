@@ -17,9 +17,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO tb_viagens (id_usuario, id_veiculo, cidade_destino, estado_destino, km_inicial, status_viagem) VALUES (?, ?, ?, ?, ?, ?)"
-            );
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tb_viagens (id_usuario, id_veiculo, cidade_destino, estado_destino, km_inicial, status_viagem) VALUES (?, ?, ?, ?, ?, ?)");
 
             if (viagem.getIdUsuario() != null) {
                 stmt.setInt(1, viagem.getIdUsuario());
@@ -124,9 +122,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_viagens SET km_final = ?, status_viagem = 'FINALIZADA' WHERE id_viagem = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_viagens SET km_final = ?, status_viagem = 'FINALIZADA' WHERE id_viagem = ?");
 
             if (kmFinal != null) {
                 stmt.setDouble(1, kmFinal);
@@ -149,9 +145,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_veiculos SET km_atual = ?, status = 'DISPONIVEL' WHERE id_veiculo = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET km_atual = ?, status = 'DISPONIVEL' WHERE id_veiculo = ?");
 
             if (kmFinal != null) {
                 stmt.setDouble(1, kmFinal);
@@ -236,9 +230,7 @@ public class ViagemRepository {
         ViagemDTO viagem = null;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM tb_viagens WHERE id_usuario = ? AND status_viagem = 'EM_ANDAMENTO' LIMIT 1"
-            );
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tb_viagens WHERE id_usuario = ? AND status_viagem = 'EM_ANDAMENTO' LIMIT 1");
             stmt.setInt(1, idUsuario);
             ResultSet rs = stmt.executeQuery();
 
@@ -259,9 +251,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_viagens SET id_usuario = ? WHERE id_viagem = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_viagens SET id_usuario = ? WHERE id_viagem = ?");
             stmt.setInt(1, idUsuario);
             stmt.setLong(2, idViagem);
 
@@ -278,9 +268,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_viagens SET id_usuario = NULL WHERE id_viagem = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_viagens SET id_usuario = NULL WHERE id_viagem = ?");
             stmt.setLong(1, idViagem);
 
             linhasAfetadas = stmt.executeUpdate();
@@ -296,9 +284,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_viagens SET status_viagem = ? WHERE id_viagem = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_viagens SET status_viagem = ? WHERE id_viagem = ?");
             stmt.setString(1, status);
             stmt.setLong(2, idViagem);
 
@@ -315,9 +301,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_veiculos SET status = ? WHERE id_veiculo = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_veiculos SET status = ? WHERE id_veiculo = ?");
             stmt.setString(1, status);
             stmt.setInt(2, idVeiculo);
 
@@ -334,10 +318,7 @@ public class ViagemRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_viagens SET id_usuario = ?, id_veiculo = ?, cidade_destino = ?, estado_destino = ?, "
-                    + "km_inicial = ?, km_final = ?, status_viagem = ? WHERE id_viagem = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_viagens SET id_usuario = ?, id_veiculo = ?, cidade_destino = ?, estado_destino = ?, km_inicial = ?, km_final = ?, status_viagem = ? WHERE id_viagem = ?");
 
             if (viagem.getIdUsuario() != null) {
                 stmt.setInt(1, viagem.getIdUsuario());
@@ -374,6 +355,6 @@ public class ViagemRepository {
             e.printStackTrace();
             throw new RuntimeException("Erro ao atualizar viagem: " + e.getMessage(), e);
         }
-        return linhasAfetadas;
+        return linhasAfetadas; 
     }
 }

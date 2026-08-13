@@ -17,9 +17,7 @@ public class VeiculoRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status, alerta_manutencao) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            );
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tb_veiculos (placa, modelo, ano_fabricacao, km_atual, km_ultima_manutencao, status, alerta_manutencao) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
             stmt.setString(1, veiculo.getPlaca());
             stmt.setString(2, veiculo.getModelo());

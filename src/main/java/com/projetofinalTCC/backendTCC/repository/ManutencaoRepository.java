@@ -26,9 +26,7 @@ public class ManutencaoRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO tb_manutencoes (id_veiculo, descricao, status_manutencao) VALUES (?, ?, ?)"
-            );
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO tb_manutencoes (id_veiculo, descricao, status_manutencao) VALUES (?, ?, ?)");
 
             stmt.setInt(1, manutencao.getIdVeiculo());
             stmt.setString(2, manutencao.getDescricao());
@@ -144,9 +142,7 @@ public class ManutencaoRepository {
         int linhasAfetadas = 0;
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE tb_manutencoes SET id_veiculo = ?, descricao = ?, status_manutencao = ? WHERE id_manutencao = ?"
-            );
+            PreparedStatement stmt = conn.prepareStatement("UPDATE tb_manutencoes SET id_veiculo = ?, descricao = ?, status_manutencao = ? WHERE id_manutencao = ?");
 
             stmt.setInt(1, manutencao.getIdVeiculo());
             stmt.setString(2, manutencao.getDescricao());

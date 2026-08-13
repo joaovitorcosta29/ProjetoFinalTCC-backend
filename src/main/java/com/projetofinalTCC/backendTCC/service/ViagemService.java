@@ -145,4 +145,4 @@ public class ViagemService {
         viagemRepository.atualizarStatusViagem(idViagem, "DISPONIVEL");
         viagemRepository.atualizarStatusVeiculo(viagem.getIdVeiculo(), "DISPONIVEL");
     }
-}
+} 

@@ -105,7 +105,7 @@ public class UsuarioRepository {
             }
             
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
         return usuario;
     }
